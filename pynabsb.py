@@ -52,6 +52,35 @@ def convert_sb_data(data, outfile, delimiter=",", header=True, date_filter=""):
     return records
 
 
+def convert_sb_data_qif(data, outfile, date_filter=""):
+    """Writes JSON formatted data from parse_sb_csv into a QIF file
+    compatible with YNAB.
+    """
+    def _create_qif_record(date, amount, payee):
+        return """!Type:Bank
+D%s
+T%s
+P%s
+^
+""" % (date, amount, payee)
+    records = 0
+    with open(outfile, "wb") as output:
+        for row in data:
+            if date_filter:
+                if not date_filter in row["Date"]:
+                    continue
+            # Strip any spaces. Ensure period as decimal point.
+            row["Inflow"] = row["Inflow"].replace(" ", "").replace(",", ".")
+            row["Outflow"] = row["Outflow"].replace(" ", "").replace(",", ".")
+            output.write(
+                _create_qif_record(
+                    row["Date"],
+                    row["Outflow"] if row["Outflow"] else row["Inflow"],
+                    row["Payee"]))
+            records += 1
+    return records
+
+
 def main():
     """Main. Parse arguments and execute conversion.
     """
@@ -61,10 +90,15 @@ def main():
     parser.add_argument('input', help="Input file from Swedbank")
     parser.add_argument('output', help="Output file for YNAB")
     parser.add_argument('-w', '--whitelist', help="White list dates. Eg. 2018-01")
+    parser.add_argument('--qif', action="store_true", help="Output in QIF format.")
     parser.add_argument('-q', '--quiet', action="store_true", help="Quiet")
     args = parser.parse_args()
     parsed_data = parse_sb_csv(args.input)
-    num_records = convert_sb_data(parsed_data, args.output, date_filter=args.whitelist)
+    num_records = 0
+    if args.qif:
+        num_records = convert_sb_data_qif(parsed_data, args.output, date_filter=args.whitelist)
+    else:
+        num_records = convert_sb_data(parsed_data, args.output, date_filter=args.whitelist)
     if not args.quiet:
         print "R:%d <- %s\nW:%d -> %s" % (len(parsed_data), args.input, num_records, args.output)
 
