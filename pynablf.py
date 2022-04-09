@@ -60,7 +60,7 @@ def main():
     """
     parser = argparse.ArgumentParser(
         description="Convert Länsförsäkringar Excel (CSV) export to YNAB compatible CSV.",
-        prog="pynabsb.py")
+        prog="pynablf.py")
     parser.add_argument('input', help="Input file from Länsförsäkringar")
     parser.add_argument('output', help="Output file for YNAB")
     parser.add_argument('-w', '--whitelist', help="White list dates. Eg. 2018-01")

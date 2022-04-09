@@ -1,4 +1,4 @@
-# pynalf
+# pynablf
 Command line script to re-format Länsförsäkringar bank transaction exports to YNAB CSV format.
 
 ## Usage
@@ -7,9 +7,10 @@ Login to Länsförsäkringar bank and go to the account you want and hit "Export
 ## Credits
 Original version for Swedbank by https://github.com/emilerl
 
+
 ```
-$ ./pynalf.py -h
-usage: pynabsb.py [-h] [-w WHITELIST] [-q] input output
+$ ./pynablf.py -h
+usage: pynablf.py [-h] [-w WHITELIST] [-q] input output
 
 Convert Länsförsäkringar Excel (CSV) export to YNAB compatible CSV.
 

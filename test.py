@@ -4,7 +4,7 @@
 import os
 import unittest
 
-import pynalf
+import pynablf
 
 
 TESTCSV = """\"Kontonummer\";\"Kontonamn\";\"\";\"Saldo\";\"Tillgängligt belopp\"
@@ -27,11 +27,11 @@ class ConverterTestCase(unittest.TestCase):
             csvfile.write(TESTCSV)
 
     def test_parse_simple(self):
-        data = pynalf.parse_lf_csv(self.csvpath)
+        data = pynablf.parse_lf_csv(self.csvpath)
         self.assertEquals(3, len(data))
 
     def test_parse_contents(self):
-        data = pynalf.parse_lf_csv(self.csvpath)
+        data = pynablf.parse_lf_csv(self.csvpath)
         self.assertEquals("Wolt,Stockholm,SE", data[0]["Payee"])
         self.assertEquals("2022-01-11", data[0]["Date"])
         self.assertEquals("-164,00", data[0]["Outflow"])
@@ -39,8 +39,8 @@ class ConverterTestCase(unittest.TestCase):
         self.assertEquals("", data[0]["Memo"])
 
     def test_conversion(self):
-        data = pynalf.parse_lf_csv(self.csvpath)
-        pynalf.convert_lf_data(data, self.outpath)
+        data = pynablf.parse_lf_csv(self.csvpath)
+        pynablf.convert_lf_data(data, self.outpath)
 
         result = None
         with open(self.outpath, "rb") as outfile:
@@ -49,8 +49,8 @@ class ConverterTestCase(unittest.TestCase):
         self.assertEquals(TESTCSV_RESULT, result)
 
     def test_conversion_date_filter(self):
-        data = pynalf.parse_lf_csv(self.csvpath)
-        pynalf.convert_lf_data(data, self.outpath, date_filter="2022-01-10")
+        data = pynablf.parse_lf_csv(self.csvpath)
+        pynablf.convert_lf_data(data, self.outpath, date_filter="2022-01-10")
 
         result = None
         with open(self.outpath, "rb") as outfile:
